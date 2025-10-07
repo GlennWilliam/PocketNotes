@@ -1,7 +1,10 @@
+from email import message
 from flask import blueprints, jsonify, request
 from app.services.auth_service import register_user
+from app.services.auth_service import login_user
 
 register_bp = blueprints.Blueprint('register_bp', __name__)
+login_bp = blueprints.Blueprint('login_bp', __name__)
 
 @register_bp.route('/', methods=['POST'])
 def register():
@@ -15,14 +18,27 @@ def register():
 		return jsonify({"message": "Username, email, and password are required"}), 400
 	
 	user, message = register_user(username, email, password)
+	
 	# Check if registration was successful
 	if not user:
 		return jsonify({"message": message}), 400
 	
-	user_data = {	
-		"username": user.username,
-		"email": user.email,
-		"created_at": user.created_at,
-	}
+	return jsonify({"data": user, "message": "Registration successful"}), 201
 
-	return jsonify({"data": user_data, "message": "Registration successful"}), 201
+@login_bp.route('/', methods=['POST'])
+def login():
+	data = request.json
+	username = data.get('username')
+	password = data.get('password')
+	
+	# Validate input
+	if not username or not password:
+		return jsonify({"message": "Username and password are required"}), 400
+	
+	user, message = login_user(username, password)
+	
+	# Check if login was successful
+	if not user:
+		return jsonify({"message": message}), 401
+
+	return jsonify({"data": user, "message": "Login successful"}), 200

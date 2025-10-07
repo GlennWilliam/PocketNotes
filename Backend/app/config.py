@@ -17,6 +17,7 @@ def mysql_config():
 class Config:
 	SQLALCHEMY_DATABASE_URI = mysql_config()
 	SQLALCHEMY_TRACK_MODIFICATIONS = False
+	JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "123")
 
 def test_db_connection(config):
 	try:
