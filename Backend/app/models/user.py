@@ -1,6 +1,6 @@
 import uuid
 from app import db, bcrypt
-from datetime import datetime
+from datetime import datetime, UTC
 
 class User(db.Model):
 	__name__ = 'user'
@@ -12,8 +12,8 @@ class User(db.Model):
 	password = db.Column(db.String(255), nullable=False)
 	profile_picture = db.Column(db.String(255), nullable=True)
 	thumbnail_picture = db.Column(db.String(255), nullable=True)
-	created_at = db.Column(db.DateTime, default=datetime.utcnow)
-	updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+	created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
+	updated_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
 	
 	# Password hashing methods
 	def set_password(self, password):
