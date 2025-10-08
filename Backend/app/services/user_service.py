@@ -69,10 +69,11 @@ def update_user_by_id(user_id, data, profile_picture=None, thumbnail_picture=Non
 def is_valid_image(filename):
 	allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
 	_, ext = os.path.splitext(filename.lower())
+	ext = ext.lstrip('.')	
 	return ext in allowed_extensions
 
 def random_name(filename):
 	# get extension of the file
 	ext = os.path.splitext(filename)[1].lower()
 	# generate a random name
-	return f"{uuid.uuid4().hex}.{ext}"
+	return f"{uuid.uuid4().hex}{ext}"
