@@ -22,4 +22,14 @@ class User(db.Model):
 	def check_password(self, password):
 		return bcrypt.check_password_hash(self.password, password)
 	
+	def to_json(self):
+		return {
+			"id": self.id,
+			"username": self.username,
+			"email": self.email,
+			"profile_picture": self.profile_picture,
+			"thumbnail_picture": self.thumbnail_picture,
+			"created_at": self.created_at.isoformat(),
+		}
+	
 	

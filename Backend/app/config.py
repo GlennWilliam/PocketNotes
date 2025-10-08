@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
+from datetime import timedelta
 
 load_dotenv()
 
@@ -17,7 +18,13 @@ def mysql_config():
 class Config:
 	SQLALCHEMY_DATABASE_URI = mysql_config()
 	SQLALCHEMY_TRACK_MODIFICATIONS = False
+	
+	# JWT Configuration
 	JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "123")
+	
+	# JWT expired
+	JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)
+	
 
 def test_db_connection(config):
 	try:
