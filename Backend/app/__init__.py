@@ -24,6 +24,7 @@ def create_app():
 	
 	# Register table
 	from app.models.user import User
+	from app.models.notes import Notes
 	
 	# Routing
 	from app.routes.base_route import base
