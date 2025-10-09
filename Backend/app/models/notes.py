@@ -19,12 +19,11 @@ class Notes(db.Model):
 	
 	user = db.relationship("User", back_populates="notes")
 	
-	# Password hashing methods
 	def set_password(self, password):
-		self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+		self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
 	
 	def check_password(self, password):
-		return bcrypt.check_password_hash(self.password, password)
+		return bcrypt.check_password_hash(self.password_hash, password)
 
 	def to_json(self, include_user = True):
 		data = {
@@ -35,9 +34,9 @@ class Notes(db.Model):
 			"content": self.content,
 			"status": self.status,
 			"password_hint": self.password_hint,
-			"created_at": self.created_at.isoformat(),
-			"updated_at": self.updated_at.isoformat(),
-			"deleted_at": self.deleted_at.isoformat(),
+			"created_at": self.created_at.isoformat() if self.created_at else None,
+			"updated_at": self.updated_at.isoformat() if self.updated_at else None,
+			"deleted_at": self.deleted_at.isoformat() if self.deleted_at else None,
 		}
 		
 		# Include user to retrieve associated user
