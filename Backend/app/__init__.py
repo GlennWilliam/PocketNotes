@@ -37,5 +37,9 @@ def create_app():
 	
 	from app.routes.user_route import user_bp
 	app.register_blueprint(user_bp, url_prefix='/api/v1/user')
+	
+	from app.routes.upload_route import upload_bp
+	app.register_blueprint(upload_bp, url_prefix='/api/v1/upload')
+	
 
 	return app
