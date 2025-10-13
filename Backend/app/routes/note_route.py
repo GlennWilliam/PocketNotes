@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.utils.response import success_response, error_response
-from app.services.note_service import create_note
+from app.services.note_service import create_note, get_public_notes
 
 note_bp = Blueprint('note_bp', __name__)
 
@@ -22,4 +22,16 @@ def create_note_route():
 	if not note:
 		return error_response(message, 400)
 	return success_response(note, message, 201)
+
+@note_bp.route('/', methods=['GET'])
+@jwt_required()
+def get_public_notes_route():
+	query_params = request.args.get('query', type=str)
+	page = int(request.args.get('page', default=1, type=int))
+	per_page = int(request.args.get('per_page', default=10, type=int))
+	sort_by = request.args.get('sort_by', default='created_at', type=str)
+	order = request.args.get('order', default='desc', type=str)
 	
+	notes, meta, message = get_public_notes(query_params, page, per_page, sort_by, order)
+
+	return success_response(notes, message, 200, meta)
