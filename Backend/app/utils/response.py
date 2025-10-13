@@ -11,10 +11,12 @@ def success_response(data=None, message="Success", status_code=200, meta=None):
 
 	return jsonify(response), status_code
 
-def error_response(message, status_code=400):
+def error_response(message, status_code=400, hint=None):
 	response = {
 		"status": "error",
 		"message": message
 	}
+	if hint:
+		response["password_hint"] = hint
 
 	return jsonify(response), status_code

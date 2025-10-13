@@ -136,4 +136,29 @@ def get_user_notes(user_id, query_params=None, page=1, per_page=10, sort_by='cre
 		return notes_data, meta, f"Notes {user_id} retrieved successfully"
 	except Exception as e:
 		return None, None, "Error retrieving public notes: " + str(e)
+	
+def get_note_by_slug(slug, password=None, user_id=None):
+	try:
+		note = Notes.query.filter(Notes.slug == slug, Notes.deleted_at == None).first()
+		
+		if not note:
+			return None, "Note not found", None
+
+		# If note is private, check if user_id matches
+		if note.status == 'private':
+			if not user_id or note.user_id != user_id:
+				return None, "Access denied to private note", None
+		
+		# If note is protected, check password
+		if note.status == 'protected':
+			if not password:
+				return None, "Password required", note.password_hint
+			
+			if not note.check_password(password):
+				return None, "Incorrect password", note.password_hint
+		
+		return note.to_json(include_user=True), "Note retrieved successfully", None
+	
+	except Exception as e:
+		return None, "Error retrieving note: " + str(e), None
 

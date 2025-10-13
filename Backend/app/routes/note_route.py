@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.utils.response import success_response, error_response
-from app.services.note_service import create_note, get_public_notes, get_user_notes
+from app.services.note_service import create_note, get_public_notes, get_user_notes, get_note_by_slug
 
 note_bp = Blueprint('note_bp', __name__)
 
@@ -48,4 +48,24 @@ def get_user_notes_route():
 	notes, meta, message = get_user_notes(user_id, query_params, page, per_page, sort_by, order)
 	
 	return success_response(notes, message, 200, meta)
+
+@note_bp.route('/<string:slug>', methods=['GET'])
+@jwt_required(optional=True)
+def get_note_by_slug_route(slug):
+	password = request.args.get('password', type=str) or None
+	
+	if password is None and request.is_json:
+		body = request.get_json()
+		password = body.get('password', None)
+	
+	user_id = get_jwt_identity()
+	note, message, hint = get_note_by_slug(slug, password, user_id)
+	
+	if not note:
+		if message in {"Password required", "Incorrect password"}:
+			return error_response(message, 401, hint)
+		
+		return error_response(message, 404)
+	
+	return success_response(note, message, 200)
 
