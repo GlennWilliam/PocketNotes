@@ -15,7 +15,11 @@ class User(db.Model):
 	created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
 	updated_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
 	
+	# Relationship to notes
 	notes = db.relationship("Notes", back_populates="user", lazy=True)
+	
+	# Relationship to likes
+	likes = db.relationship("Like", backref="user", lazy=True)
 	
 	# Password hashing methods
 	def set_password(self, password):
@@ -24,7 +28,7 @@ class User(db.Model):
 	def check_password(self, password):
 		return bcrypt.check_password_hash(self.password, password)
 	
-	def to_json(self, include_notes = True):
+	def to_json(self, include_notes = True, include_likes = False):
 		data = {
 			"id": self.id,
 			"username": self.username,
@@ -37,6 +41,10 @@ class User(db.Model):
 		# Include notes to retrieve associated notes
 		if include_notes:
 			data["notes"] = [note.to_json(include_user=False) for note in self.notes]
+		
+		# Include likes to retrieve associated likes
+		if include_likes:
+			data["likes"] = [like.to_json(include_user=False, include_note=False) for like in self.likes]
 			
 		return data
 	
