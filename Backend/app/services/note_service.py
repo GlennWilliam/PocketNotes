@@ -162,11 +162,14 @@ def get_note_by_slug(slug, password=None, user_id=None):
 	except Exception as e:
 		return None, "Error retrieving note: " + str(e), None
 
-def update_note(note_id, data):
+def update_note(user_id, note_id, data):
 	note = Notes.query.filter_by(id=note_id, deleted_at=None).first()
 	
 	if not note:
 		return None, "Note not found"
+	
+	if note.user_id != user_id:
+		return None, "Access denied to update this note"
 	
 	try:
 		if "title" in data:
@@ -201,6 +204,8 @@ def update_note(note_id, data):
 	except Exception as e:
 		db.session.rollback()
 		return None, "Error updating note: " + str(e)
+	
+
 	
 	
 

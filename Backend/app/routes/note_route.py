@@ -73,8 +73,8 @@ def get_note_by_slug_route(slug):
 @jwt_required()
 def update_note_route(note_id):
 	data = request.get_json()
-	
-	note, message = update_note(note_id, data)
+	user_id = get_jwt_identity()
+	note, message = update_note(user_id, note_id, data)
 	
 	if not note:
 		return error_response(message, 400)
