@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.utils.response import success_response, error_response
-from app.services.note_service import create_note, get_public_notes, get_user_notes, get_note_by_slug
+from app.services.note_service import create_note, get_public_notes, get_user_notes, get_note_by_slug, update_note
 
 note_bp = Blueprint('note_bp', __name__)
 
@@ -68,4 +68,18 @@ def get_note_by_slug_route(slug):
 		return error_response(message, 404)
 	
 	return success_response(note, message, 200)
+
+@note_bp.route('/<string:note_id>', methods=['PUT'])
+@jwt_required()
+def update_note_route(note_id):
+	data = request.get_json()
+	
+	note, message = update_note(note_id, data)
+	
+	if not note:
+		return error_response(message, 400)
+	
+	return success_response(note, message, 200)
+	
+
 

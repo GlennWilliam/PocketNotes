@@ -162,3 +162,45 @@ def get_note_by_slug(slug, password=None, user_id=None):
 	except Exception as e:
 		return None, "Error retrieving note: " + str(e), None
 
+def update_note(note_id, data):
+	note = Notes.query.filter_by(id=note_id, deleted_at=None).first()
+	
+	if not note:
+		return None, "Note not found"
+	
+	try:
+		if "title" in data:
+			note.title = data['title']
+		if "content" in data:
+			note.content = data['content']
+		if "status" in data:
+			status = data['status']
+			
+			if status not in ['public', 'private', 'protected']:
+				return None, "Invalid status value"
+			
+			note.status = status
+			
+			if status == "protected":
+				password = data.get('password')
+				password_hint = data.get('password_hint')
+				
+				if not password or not password_hint:
+					return None, "Password and password hint are required for protected notes"
+				
+				note.set_password(password)
+				note.password_hint = password_hint
+			else:
+				note.password_hash = None
+				note.password_hint = None
+				
+		db.session.commit()
+		return note.to_json(include_user=True), "Note updated successfully"
+				
+	
+	except Exception as e:
+		db.session.rollback()
+		return None, "Error updating note: " + str(e)
+	
+	
+
