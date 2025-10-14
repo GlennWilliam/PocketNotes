@@ -24,7 +24,7 @@ class Notes(db.Model):
 	user = db.relationship("User", back_populates="notes")
 	
 	# Relationship to likes
-	likes = db.relationship("Like", backref="note", lazy=True)
+	likes = db.relationship("Like", back_populates="note", lazy=True)
 	
 	def set_password(self, password):
 		self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -56,11 +56,11 @@ class Notes(db.Model):
 		
 		# Include user to retrieve associated user
 		if include_user and self.user:
-			data["user"] = self.user.to_json(include_note=False, include_likes=False)
+			data["user"] = self.user.to_json(include_notes=False, include_likes=False)
 			
 		# Include likes to retrieve associated likes
 		if include_likes:
-			data["likes"] = [like.to_json(include_user=True, include_note=False) for like in self.likes]
+			data["likes"] = [like.to_json(include_user=True, include_notes=False) for like in self.likes]
 
 		return data
 		

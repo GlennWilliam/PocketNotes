@@ -12,16 +12,16 @@ class Like(db.Model):
 	updated_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
 	
 	# Relationship to user
-	user = db.relationship("User", backref=db.backref("likes", lazy=True))
+	user = db.relationship("User", back_populates="likes") 
 	
 	# Relationship to notes
-	note = db.relationship("Notes", backref=db.backref("likes", lazy=True))
+	note = db.relationship("Notes", back_populates="likes")
 	
-	def to_json(self, include_user = False, include_note = False):
+	def to_json(self, include_user = False, include_notes = False):
 		data = {
 			"id": self.id,
 			"user_id": self.user_id,
-			"note_id": self.note
+			"note_id": self.note_id
 		}
 		
 		if include_user and self.user:
@@ -30,7 +30,7 @@ class Like(db.Model):
 				"email": self.user.email,
 			}
 		
-		if include_note and self.note:
+		if include_notes and self.note:
 			data["note"] = {
 				"title": self.note.title,
 				"content": self.note.content,
