@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.utils.response import success_response, error_response
-from app.services.note_service import create_note, get_public_notes, get_user_notes, get_note_by_slug, update_note
+from app.services.note_service import create_note, get_public_notes, get_user_notes, get_note_by_slug, update_note, delete_note
 
 note_bp = Blueprint('note_bp', __name__)
 
@@ -81,5 +81,17 @@ def update_note_route(note_id):
 	
 	return success_response(note, message, 200)
 	
+@note_bp.route('/<string:note_id>', methods=['DELETE'])
+@jwt_required()
+def delete_note_route(note_id):
+	user_id = get_jwt_identity()
+	note, message = delete_note(user_id, note_id)
+	
+	if not note:
+		return error_response(message, 400)
+
+	return success_response(note, message, 200)
+	
+
 
 

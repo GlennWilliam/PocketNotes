@@ -3,6 +3,8 @@ from app.models.user import User
 from app.models.notes import Notes
 from sqlalchemy import asc, desc
 import uuid
+from datetime import datetime, UTC
+
 
 
 def create_note(user_id, title, content, status='public', password=None, password_hint=None):
@@ -206,6 +208,22 @@ def update_note(user_id, note_id, data):
 		return None, "Error updating note: " + str(e)
 	
 
+def delete_note(user_id, note_id):
+	note = Notes.query.filter_by(id=note_id, deleted_at=None).first()
 	
+	if not note:
+		return None, "Note not found"
+	
+	if note.user_id != user_id:
+		return None, "Access denied to delete this note"
+	
+	try:
+		note.deleted_at = datetime.now(UTC)
+		db.session.commit()
+		return note.to_json(include_user=True), "Note deleted successfully"
+	
+	except Exception as e:
+		db.session.rollback()
+		return None, "Error deleting note: " + str(e)
 	
 
