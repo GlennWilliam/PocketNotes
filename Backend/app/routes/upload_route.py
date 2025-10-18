@@ -3,6 +3,7 @@ from flask import current_app, blueprints, abort, send_from_directory
 from werkzeug.utils import secure_filename
 
 upload_bp = blueprints.Blueprint('upload_bp', __name__)
+
 @upload_bp.route('/<filename>', methods=['GET'])
 def get_upload(filename):
 	safe_filename = secure_filename(filename)
