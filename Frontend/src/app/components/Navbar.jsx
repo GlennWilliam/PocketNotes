@@ -1,18 +1,19 @@
 import React from "react";
 import Image from "next/image";
 import { RiSearchLine } from "react-icons/ri";
+import Link from "next/link";
 
 const Navbar = () => {
 	return (
 		<header className="bg-white">
 			<div className="mx-auto flex h-16 max-w-screen-xl items-center justify-between gap-8 px-4 sm:px-6 lg:px-8">
-				<a className="flex items-center gap-2">
-					<Image src="/assets/logo.png" alt="Logo" width={75} height={75} />
-					<h2>PocketNotes</h2>
-				</a>
+				<Link href="/" className="flex items-center">
+					<Image src="/assets/logo.png" alt="Logo" width={125} height={125} />
+					<h2 className="font-bold text-2xl -ml-3">PocketNotes</h2>
+				</Link>
 
-				<div className="relative">
-					<div className="flex items-center justify-center gap-2 pr-2 py-2 border border-rounded-md border-neutral-300">
+				<div className="relative w-100">
+					<div className="flex items-center gap-2 pr-2 py-2 border border-rounded-md border-neutral-300">
 						<div className="flex items-center justify-center px-3 border-r border-neutral-300 h-5">
 							<RiSearchLine />
 						</div>
