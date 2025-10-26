@@ -1,14 +1,13 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins } from "next/font/google";
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
 import "./globals.css";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata = {
@@ -20,9 +19,21 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${poppins.variable} antialiased`}
       >
-        {children}
+		<section>
+			<Navbar />
+			<Sidebar />
+			<div className="pt-5 lg:pl-72 lg:pr-6 px-8 pb-6">
+				<div className="bg-white border border-neutral-200 rounded-2xl p-4">
+					<AntdRegistry>
+						{children}
+					</AntdRegistry>
+				</div>
+				
+			</div>
+		</section>
+        
       </body>
     </html>
   );
