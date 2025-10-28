@@ -1,11 +1,37 @@
 "use client";
 import React from "react";
 import { useState, useEffect } from "react";
-import { Modal, Tabs, Form, Input, Button } from "antd";
+import { Modal, Tabs, Form, Input, Button, message } from "antd";
+import { useAuth } from "../store/UseAuth";
 
 const AuthModal = ({ open, onClose }) => {
+	const { login, register, loading } = useAuth();
 	const [tab, setTab] = useState("login");
 	const formKey = open ? "open" : "closed";
+
+	async function onFinishRegister(values) {
+		const { ok, error } = await register({
+			username: values.username,
+			email: values.email,
+			password: values.password,
+		});
+		if (!ok) {
+			return message.error(error || "Register failed");
+		}
+		message.success("Register successful. Please login.");
+		setTab("login");
+
+		onClose?.();
+	}
+
+	async function onFinishLogin(values) {
+		const { ok, error } = await login({ username: values.username, password: values.password });
+		if (!ok) {
+			return message.error(error || "Login failed");
+		}
+		message.success("Login successful");
+	}
+
 	return (
 		<Modal
 			open={open}
@@ -30,6 +56,7 @@ const AuthModal = ({ open, onClose }) => {
 							<Form
 								key={`login-${formKey}`}
 								layout="vertical"
+								onFinish={onFinishLogin}
 								preserve={false}
 							>
 								<Form.Item
@@ -84,6 +111,7 @@ const AuthModal = ({ open, onClose }) => {
 							<Form
 								key={`login-${formKey}`}
 								layout="vertical"
+								onFinish={onFinishRegister}
 								preserve={false}
 							>
 								<Form.Item
