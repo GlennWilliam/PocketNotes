@@ -2,7 +2,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Modal, Tabs, Form, Input, Button, message } from "antd";
-import { useAuth } from "../store/UseAuth";
+import { useAuth } from "../../store/UseAuth";
 
 const AuthModal = ({ open, onClose }) => {
 	const { login, register, loading } = useAuth();

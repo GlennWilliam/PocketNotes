@@ -5,7 +5,7 @@ import Image from "next/image";
 import { RiSearchLine } from "react-icons/ri";
 import Link from "next/link";
 import { Button } from "antd";
-import AuthModal from "./AuthModal";
+import AuthModal from "./modal/AuthModal";
 
 const Navbar = () => {
 	const [showModalAuth, setShowModalAuth] = useState(false);
