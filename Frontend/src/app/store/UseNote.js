@@ -1,0 +1,38 @@
+import { create } from "zustand";
+import { createNoteApi } from "../services/NoteService";
+import { useAuth } from "./UseAuth";
+
+export const useNote = create((set, get) => ({
+	items: [],
+	meta: { page: 1, per_page: 12, total: 0, pages: 1 },
+	myItems: [],
+	myMeta: { page: 1, per_page: 12, total: 0, pages: 1 },
+	loading: false,
+
+	async createNote(payload) {
+		const auth = useAuth.getState() || {};
+		let token = auth.token || ""
+		
+		if (!token)
+			throw new Error("No token found. Please login first!");
+		
+		const response = await createNoteApi(payload, `Bearer ${token}`);
+
+		const myItems = get().myItems || [];
+		set({ myItems: [response, ...myItems] });
+
+		if (response?.status === "public") {
+			const items = get().items || [];
+			set({ items: [response, ...items] });
+		}
+
+		if (typeof window !== "undefined") {
+			window.dispatchEvent(
+				new CustomEvent("note:created", { detail: response })
+			);
+		}
+
+
+		return response;
+	},
+}));
