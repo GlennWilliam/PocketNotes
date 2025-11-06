@@ -25,10 +25,10 @@ def create_note_route():
 
 @note_bp.route('/', methods=['GET'])
 def get_public_notes_route():
-	query_params = request.args.get('query', type=str)
+	query_params = request.args.get('q', type=str)  # CHANGED from 'query'
 	page = int(request.args.get('page', default=1, type=int))
 	per_page = int(request.args.get('per_page', default=10, type=int))
-	sort_by = request.args.get('sort_by', default='created_at', type=str)
+	sort_by = request.args.get('sort', default='created_at', type=str)  # CHANGED from 'sort_by'
 	order = request.args.get('order', default='desc', type=str)
 	
 	notes, meta, message = get_public_notes(query_params, page, per_page, sort_by, order)
