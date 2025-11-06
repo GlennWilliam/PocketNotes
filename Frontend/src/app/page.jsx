@@ -1,8 +1,18 @@
-import Navbar from "./components/Navbar";
-import Sidebar from "./components/Sidebar";
+"use client";
+import React, { use, useEffect, useState } from "react";
+import { Empty, Spin } from "antd";
 import CardNote from "./components/CardNote";
+import { useAuth } from "./store/UseAuth";
+import { useNote } from "./store/UseNote";
 
 export default function Home() {
+	const { items, loading, loadPublicNotes } = useNote();
+	const { token } = useAuth();
+
+	useEffect(() => {
+		loadPublicNotes({ page: 1, per_page: 12 });
+	}, [token, loadPublicNotes]);
+
 	const dummy = [
 		{
 			title: "Sample Note Title",
@@ -43,9 +53,17 @@ export default function Home() {
 
 	]
 
+	if(loading){
+		return <div className="py-10 flex justify-center"><Spin /></div>
+	}
+	
+	if (items.length === 0) {
+		return <div className="py-10"><Empty /></div>;
+	}	
+
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-			{dummy.map((note, index) => (
+			{items.map((note, index) => (
 				<CardNote key={index} note={note} />
 			))}
 		</div>
