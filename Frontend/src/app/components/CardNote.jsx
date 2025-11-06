@@ -21,8 +21,11 @@ const CardNote = ({ note, bg }) => {
 		<div className="relative">
 			<Card
 				className="note-card border-0 !rounded-2xl cursor-pointer"
+				style={{ background: cardbg }}
+				styles={{ body: { padding: "16px" } }}
 				hoverable
 				tabIndex={0}
+				aria-label={ note?.title || note?.title !== "Untitled" ? `Open note titled ${note?.title}` : "Open untitled note" }
 			>
 				<h3 className="font-semibold mb-2 text-neutral-800 text-xl sm:text-base">
 					{note.title}

@@ -4,14 +4,15 @@ import { Empty, Spin } from "antd";
 import CardNote from "./components/CardNote";
 import { useAuth } from "./store/UseAuth";
 import { useNote } from "./store/UseNote";
+import { colorForNote } from "./utils/colors";
+import { colors } from "./constants/colors";
 
 export default function Home() {
 	const { items, loading, loadPublicNotes } = useNote();
-	const { token } = useAuth();
 
 	useEffect(() => {
 		loadPublicNotes({ page: 1, per_page: 12 });
-	}, [token, loadPublicNotes]);
+	}, [loadPublicNotes]);
 
 	const dummy = [
 		{
@@ -56,7 +57,7 @@ export default function Home() {
 	if(loading){
 		return <div className="py-10 flex justify-center"><Spin /></div>
 	}
-	
+
 	if (items.length === 0) {
 		return <div className="py-10"><Empty /></div>;
 	}	
@@ -64,7 +65,7 @@ export default function Home() {
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 			{items.map((note, index) => (
-				<CardNote key={index} note={note} />
+				<CardNote key={index} note={note} bg={colorForNote(note, colors)} />
 			))}
 		</div>
 	);
