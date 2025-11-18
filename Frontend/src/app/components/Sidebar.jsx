@@ -18,7 +18,7 @@ const Sidebar = () => {
 		{ name: "Dashboard", href: "/", icon: <RiEarthLine size={20} /> },
 		{
 			name: "My Notes",
-			href: "/my-note",
+			href: "/my-notes",
 			icon: <RiFolderOpenLine size={20} />,
 		},
 		{

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { createNoteApi, fetchPublicNotesApi } from "../services/NoteService";
+import { createNoteApi, fetchPublicNotesApi, fetchMyNotesApi } from "../services/NoteService";
 import { useAuth } from "./UseAuth";
 
 export const useNote = create((set, get) => ({
@@ -44,4 +44,21 @@ export const useNote = create((set, get) => ({
 			set({ loading: false });
 		}
 	},
+
+	async loadMine(params = {}) {
+		const auth = useAuth.getState() || {};
+		let token = auth.token || "";
+		if(!token) throw new Error("No token found. Please login first!");
+		if(token.startsWith("Bearer ")) token = token.slice(7);
+		set({ loading: true });
+		try {
+			const { items, meta } = await fetchMyNotesApi(params, token);
+			set({ myItems: items, myMeta: meta, loading: false });
+			return { ok: true };
+		} catch (error) {
+			set({ loading: false });
+			return { ok: false, error: error.message };
+		}
+	}
+
 }));
