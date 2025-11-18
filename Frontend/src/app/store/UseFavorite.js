@@ -66,12 +66,13 @@ export const useFavorite = create((set, get) => ({
 
 		const key = toKey(noteId);
 		const { favoriteIds, pendingIds } = get();
-		const willLike = !favoriteIds.includes(key);
+		const ids = Array.isArray(favoriteIds) ? favoriteIds : [];
+		const willLike = !ids.includes(key);
 
 		// optimistic update
 		const nextIds = willLike
-			? [...favoriteIds, key]
-			: favoriteIds.filter((id) => id !== key);
+			? [...ids, key]
+			: ids.filter((id) => id !== key);
 
 		const nextPending = new Set(pendingIds);
 		nextPending.add(key);
@@ -82,9 +83,9 @@ export const useFavorite = create((set, get) => ({
 			await toggleLikeApi(noteId, token);
 			return willLike;
 		} catch (error) {
-			// revert if API failed
-			const revert = new Set(favoriteIds);
-			willLike ? revert.delete(key) : revert.add(key);
+			const revert = willLike
+				? ids.filter((id) => id !== key)
+				: [...ids, key];
 			set({ favoriteIds: revert });
 			throw error;
 		} finally {
