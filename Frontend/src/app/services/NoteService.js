@@ -16,7 +16,12 @@ export async function fetchPublicNotesApi({
 	sort = "created_at",
 	order = "desc",
 } = {}) {
-	const params = new URLSearchParams({ page, per_page, q, sort, order });
+	const params = new URLSearchParams({
+		page: String(page),
+		per_page: String(per_page),
+		sort,
+		order,
+	});
 
 	const response = await api.get(`/note/?${params.toString()}`);
 	const raw = response.data;
@@ -25,5 +30,35 @@ export async function fetchPublicNotesApi({
 	const items = Array.isArray(raw) ? raw : raw?.data || [];
 	const meta = Array.isArray(raw) ? {} : raw?.meta || {};
 
+	return { items, meta };
+}
+
+export async function fetchMyNotesApi(
+	{
+		page = 1,
+		per_page = 12,
+		q = "",
+		sort = "created_at",
+		order = "desc",
+	} = {},
+	token
+) {
+	const params = new URLSearchParams({
+		page: String(page),
+		per_page: String(per_page),
+		sort,
+		order,
+	});
+	if (q) params.set("q", q);
+
+	const response = await api.get(`/note/me?${params.toString()}`, { token });
+	const raw = response?.data ?? response;
+
+	const items = Array.isArray(raw) ? raw : raw?.items ?? [];
+	const meta = Array.isArray(raw)
+		? {}
+		: raw?.meta ?? { page: 1, per_page: 12, total: 0, pages: 1 };
+
+	console.log("fetchMyNotesApi parsed items:", items);
 	return { items, meta };
 }
