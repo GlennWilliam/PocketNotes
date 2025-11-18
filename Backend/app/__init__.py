@@ -73,6 +73,7 @@ def create_app():
 	app.register_blueprint(note_bp, url_prefix='/api/v1/note')
 	
 	# [POST] /api/v1/like/<string:note_id> -> Toggle like on a note
+	# [GET] /api/v1/like/ -> List user's favorite notes
 	from app.routes.like_route import like_bp
 	app.register_blueprint(like_bp, url_prefix='/api/v1/like')
 
