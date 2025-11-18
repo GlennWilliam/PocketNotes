@@ -6,13 +6,29 @@ import { useAuth } from "./store/UseAuth";
 import { useNote } from "./store/UseNote";
 import { colorForNote } from "./utils/colors";
 import { colors } from "./constants/colors";
+import { useFavorite } from "./store/UseFavorite";
 
 export default function Home() {
 	const { items, loading, loadPublicNotes } = useNote();
+	const { token } = useAuth();
+	const loadFavIds = useFavorite((s) => s.loadIds);
 
 	useEffect(() => {
 		loadPublicNotes({ page: 1, per_page: 12 });
 	}, [loadPublicNotes]);
+
+	useEffect(() => {
+		if (!token) return;
+
+		const loadFavorites = async () => {
+			try {
+			await loadFavIds();
+			} catch (err) {
+			console.error("Failed to load favorites:", err);
+			}
+		};
+		loadFavorites();
+	}, [token]);
 
 	const dummy = [
 		{
