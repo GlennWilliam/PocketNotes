@@ -22,8 +22,8 @@ const Sidebar = () => {
 			icon: <RiFolderOpenLine size={20} />,
 		},
 		{
-			name: "Favorite",
-			href: "/favorite",
+			name: "Favorites",
+			href: "/favorites",
 			icon: <RiUserHeartLine size={20} />,
 		},
 		{ name: "Profile", href: "/profile", icon: <RiUserLine size={20} /> },
