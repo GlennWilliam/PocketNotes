@@ -54,6 +54,7 @@ const NoteCreateModal = ({ open, onClose, onCreated }) => {
 			setLoading(false);
 		} finally {
 			setLoading(false);
+			onClose?.();
 		}
 	}
 
@@ -140,16 +141,6 @@ const NoteCreateModal = ({ open, onClose, onCreated }) => {
 					
 				)}
 			</div>
-
-
-			<Form.Item>
-				<button
-					type="submit"
-					className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
-				>
-					Create Note
-				</button>
-			</Form.Item>
 		</Form>
 	</Modal>
   )
