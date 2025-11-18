@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { loginApi, registerApi } from "../services/AuthService";
+import { getProfileApi, loginApi, registerApi } from "../services/AuthService";
 
 const noStorage = {
 	getItem: () => null,
@@ -59,6 +59,36 @@ export const useAuth = create(
                 }
             },
 
-        })
+			async checkSession() {
+				const { token } = get() || {};
+				if (!token) {
+					return { ok: false, error: "No token" };
+				}
+
+				try {
+					const pure = token.startsWith("Bearer ") ? token.slice(7) : token;
+					const response = await getProfileApi(pure);
+					const { data } = response;
+					set({
+						user: {
+							id: data.id,
+							username: data.username,
+							email: data.email,
+							profile: data.profile_img,
+							thumbnail_img: data.thumbnail_img,
+						},
+					});
+					return { ok: true };
+				} catch (error) {
+					set({ user: null, token: null });
+					return { ok: false, error: error?.message || "Session invalid" };
+				}
+			}
+
+        }),
+		{
+			name: "auth-storage", 
+			storage: createJSONStorage(() => localStorage), 
+		}
     )
 )
