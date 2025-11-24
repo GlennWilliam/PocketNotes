@@ -9,9 +9,17 @@ export async function loginApi(payload) {
 }
 
 export async function getProfileApi(token) {
-	return api.get("user/", { token });
+	return api.get("user/", {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	});
 }
 
-export async function updateUserApi(token, payload) {
-	return api.put("user/", payload, { token });
+export async function updateUserApi(payload, token) {
+	return api.put("user/", payload, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	});
 }
