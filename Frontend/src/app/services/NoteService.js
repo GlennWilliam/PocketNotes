@@ -62,3 +62,8 @@ export async function fetchMyNotesApi(
 	console.log("fetchMyNotesApi parsed items:", items);
 	return { items, meta };
 }
+
+export async function updateNoteApi(id, payload, token) {
+	const response = await api.put(`/note/${id}`, payload, { token });
+	return response?.data ?? response;
+}
