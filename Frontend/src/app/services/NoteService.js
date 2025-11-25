@@ -67,3 +67,12 @@ export async function updateNoteApi(id, payload, token) {
 	const response = await api.put(`/note/${id}`, payload, { token });
 	return response?.data ?? response;
 }
+
+export async function searchNotesApi(q, token) {
+	const params = new URLSearchParams();
+	if (q) params.set("q", q);
+
+	const response = await api.get(`note/?${params.toString()}`, { token });
+	const data = response?.data ?? response;
+	return Array.isArray(data) ? data : data.items ?? [];
+}
