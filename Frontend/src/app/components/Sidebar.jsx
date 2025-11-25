@@ -10,6 +10,8 @@ import {
 } from "react-icons/ri";
 import Link from "next/link";
 import NoteCreateModal from "./modal/NoteCreateModal";
+import { useAuth } from "../store/UseAuth";
+import { imgUrl } from "../libs/url";
 
 const Sidebar = () => {
 	const pathname = usePathname();
@@ -33,25 +35,59 @@ const Sidebar = () => {
 
 	const [showModalCreate, setShowModalCreate] = useState(false);
 
+	const user = useAuth((s) => s.user);
+	const token = useAuth((s) => s.token);
+	const isAuthenticated = !!token;
+
 	return (
 		<aside className="fixed top-24 left-5 h-[calc(100vh-7.5rem)] w-64 rounded-2xl border border-neutral-300 bg-white p-4 shadow-lg z-40 overflow-y-auto">
 			<div className="flex flex-col">
 				<div className="flex items-center mb-4">
-					<Image
-						src="/assets/profile.png"
-						alt="Profile"
-						width={50}
-						height={50}
-						className="rounded-full object-cover mr-3"
-					/>
-					<div className="overflow-hidden">
-						<h2 className="text-base font-semibold text-neutral-800 truncate">
-							Glenn William
-						</h2>
-						<p className="text-sm text-neutral-500 truncate">
-							glennwilliam@gmail.com
-						</p>
-					</div>
+					{isAuthenticated ? (
+						<>
+							<div
+								className="flex items-center gap-4 cursor-pointer"
+								onClick={() => setOpenEdit?.(true)} 
+							>
+								<img
+									src={
+										user?.profile_img
+											? imgUrl(user.profile_img)
+											: "/assets/profile.png"
+									}
+									className="rounded-full w-16 h-16 object-cover border border-neutral-200"
+									alt="profile user"
+								/>
+								<div className="flex flex-col">
+									<h2 className="font-bold text-xl">
+										{user?.username || "User"}
+									</h2>
+									<span className="text-sm break-all text-neutral-600">
+										{user?.email || "user@example.com"}
+									</span>
+								</div>
+							</div>
+
+							<hr className="border-neutral-300 my-3" />
+						</>
+					) : (
+						<>
+							<div className="flex items-center gap-4">
+								<img
+									src="/assets/profile.png"
+									className="rounded-full w-16 h-16 object-cover border border-neutral-200"
+									alt="default profile"
+								/>
+								<div className="flex flex-col">
+									<h2 className="font-bold text-xl">
+										Guest
+									</h2>
+								</div>
+							</div>
+
+							<hr className="border-neutral-300 my-3" />
+						</>
+					)}
 				</div>
 				<hr className="my-4 border border-neutral-200" />
 				<nav className="space-y-2">
