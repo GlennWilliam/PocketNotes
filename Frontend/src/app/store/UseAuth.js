@@ -139,6 +139,10 @@ export const useAuth = create(
 					};
 				}
 			},
+			
+			logout() {
+				set({ user: null, token: null, isAuthenticated: false });
+			}
 		}),
 		{
 			name: "auth-storage",
