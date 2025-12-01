@@ -4,7 +4,8 @@ import {
 	fetchPublicNotesApi,
 	fetchMyNotesApi,
 	updateNoteApi,
-	searchNotesApi
+	searchNotesApi,
+	getNoteBySlugApi,
 } from "../services/NoteService";
 import { useAuth } from "./UseAuth";
 
@@ -108,5 +109,27 @@ export const useNote = create((set, get) => ({
 	},
 	clearSearch() {
 		set({ searchResults: [], error: null });
+	},
+	async loadDetail(slug, password) {
+		const auth = useAuth.getState() || {};
+		let token = auth.token || "";
+		if (!token)
+			throw new Error("No token found! Please login to access the note.");
+		if (token.startsWith("Bearer ")) token = token.slice(7);
+
+		set({ loading: true, error: null });
+		try {
+			console.log("Loading note detail for slug:", slug);
+			const data = await getNoteBySlugApi(slug, { token, password });
+			set({ detail: data, loading: false });
+			return { ok: true, data };
+		} catch (error) {
+			set({ error: error.message, loading: false });
+			return { ok: false, error: error.message };
+		}
+	},
+
+	clearDetail() {
+		set({ detail: null, error: null });
 	},
 }));

@@ -62,6 +62,21 @@ const CardNote = ({ note, bg, onFavoriteChange, showPrivateIcon = true }) => {
 		}
 	};
 
+	const noteSlug = note?.slug;
+
+	const goDetail = () => {
+		if (noteSlug) {
+			router.push(`/note/${encodeURIComponent(noteSlug)}`);
+		}
+	};
+
+	const onKeyDetail = (e) => {
+		if (e.key === "Enter" || e.key === " ") {
+			e.preventDefault();
+			goDetail();
+		}
+	};
+
 	return (
 		<div className="relative">
 			<Card
@@ -70,6 +85,8 @@ const CardNote = ({ note, bg, onFavoriteChange, showPrivateIcon = true }) => {
 				styles={{ body: { padding: "16px" } }}
 				hoverable
 				tabIndex={0}
+				onClick={goDetail}
+				onKeyDown={onKeyDetail}
 				aria-label={
 					note?.title || note?.title !== "Untitled"
 						? `Open note titled ${note?.title}`
@@ -86,7 +103,6 @@ const CardNote = ({ note, bg, onFavoriteChange, showPrivateIcon = true }) => {
 				<div className="flex flex-row justify-between gap-3 mt-4">
 					<div className="flex items-center gap-2 ">
 						{note?.user?.profile_picture ? (
-							(console.log(imgUrl(note.user.profile_picture)),
 							(
 								<Avatar
 									src={imgUrl(note.user.profile_picture)}
@@ -94,7 +110,7 @@ const CardNote = ({ note, bg, onFavoriteChange, showPrivateIcon = true }) => {
 									size={38}
 									className="shrink-0"
 								/>
-							))
+							)
 						) : (
 							<Avatar
 								icon={

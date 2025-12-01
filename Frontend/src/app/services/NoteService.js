@@ -76,3 +76,14 @@ export async function searchNotesApi(q, token) {
 	const data = response?.data ?? response;
 	return Array.isArray(data) ? data : data.items ?? [];
 }
+
+export async function getNoteBySlugApi(slug, { token, password } = {}) {
+    console.log({slug})
+    const url = `note/${encodeURIComponent(slug)}` + (password ? `?password=${encodeURIComponent(password)}` : "")
+
+    const response = await api.get(url, { token })
+
+    const data = response.data ?? response
+    return data
+}
+

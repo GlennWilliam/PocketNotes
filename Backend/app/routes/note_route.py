@@ -53,12 +53,12 @@ def get_user_notes_route():
 @jwt_required(optional=True)
 def get_note_by_slug_route(slug):
 	password = request.args.get('password', type=str) or None
-	
-	if password is None and request.is_json:
-		body = request.get_json()
-		password = body.get('password', None)
-	
 	user_id = get_jwt_identity()
+	# if password is None and request.is_json:
+	# 	print("BBBBBBBBBBB")
+	# 	body = request.get_json()
+	# 	password = body.get('password', None)
+	
 	note, message, hint = get_note_by_slug(slug, password, user_id)
 	
 	if not note:
